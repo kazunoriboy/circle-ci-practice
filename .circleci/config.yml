@@ -1,10 +1,12 @@
 version: 2.1
-
-orbs:
-  win: circleci/windows@5.0.0
+commands:
+  sayhello:
+    steps:
+      - run: echo Hello World
 
 jobs:
   build:
-    executor: win/default
+    docker:
+      - image: cimg/node:lts
     steps:
-      - run: echo Hello World
+      - sayhello
