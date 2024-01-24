@@ -1,12 +1,18 @@
 version: 2.1
 commands:
   sayhello:
+    description: "Say Hello"
+    parameters:
+      to:
+        type: string
+        default: "World"
     steps:
-      - run: echo Hello World
+      - run: echo Hello << parameters.to >>
 
 jobs:
   build:
     docker:
       - image: cimg/node:lts
     steps:
-      - sayhello
+      - sayhello:
+        to: Everyone
