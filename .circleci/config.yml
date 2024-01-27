@@ -26,7 +26,7 @@ jobs:
           at: .
       - run:
           name: run jest
-          command: npx jest --ci --maxWorkers=2
+          command: npm test --ci --maxWorkers=2
 
 workflows:
   version: 2
