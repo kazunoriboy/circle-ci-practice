@@ -1,25 +1,39 @@
-version: 2
-
-jobs:
-  build:
+executors:
+  default:
     docker:
       - image: cimg/node:lts
-        environment:
-          NODE_ENV: production
-      - image: circleci/postgres:9.6
-        environment:
-          POSTGRES_USER: root
-    steps:
-      - run: 
-          name: プライマリイメージで定義された環境変数を利用する
-          command: echo "NODE_ENV is '$NODE_ENV'"
-      - run:
-          name: ステップで同名の環境変数を定義すると上書きされる
-          environment:
-            NODE_ENV: test
-          command: echo "NODE_ENV is '$NODE_ENV'"
-      - run:
-          name: サービスイメージの環境変数はステップでは利用できない
-          command: echo "POSTGRES_USER is '$POSTGRES_USER'"
+    working_directory: ~/repo
 
+version: 2.1
+jobs:
+  setup:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: install node modules
+          command: yarn install
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - node_modules
+
+  test_jest:
+    executor: default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: run jest
+          command: npx jest --ci --maxWorkers=2
+
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - setup
+      - test_jest:
+          requires:
+            - setup
 
