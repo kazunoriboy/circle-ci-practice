@@ -1,26 +1,13 @@
-version: 2.1
+version: 2
 
 jobs:
   build:
     docker:
-      - image: busybox
+      - image: cimg/node:lts
     steps:
-      - run: echo "buildjob"
-  deploy:
-    docker:
-      - image: busybox
-    steps:
-      - run: echo "deploy job"
-
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - build
-      - hold:
-          type: approval
-          requires:
-            - build
-      - deploy:
-          requires:
-            - hold
+      - run: 
+          name: ビルトイン環境変数の利用
+          command: |
+            echo "CI is '$CI'"
+            echo "CIRCLE_SHA1 is '$CIRCLE_SHA1'"
+            echo "CIRCLE_BRANCH is '$CIRCLE_BRANCH'"
